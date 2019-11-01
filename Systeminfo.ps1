@@ -22,11 +22,10 @@ $gpfailedpcs = Get-Content -Path C:\Users\ithelpdesk\Desktop\test.txt
 Foreach ($pc in $gpfailedpcs)
 {
 #Ping Test. If PC is shut off, script will stop for the current PC in pipeline and move to the next one.
-$PingRequest = &cmd /c ping $Computer -n 1 
-if ($PingRequest -contains "TTL")
+$PingRequest = Test-Connection $Computer -Count 1 -Quiet
+if ($PingRequest -eq $false)
 {
 Write-Output "Ping Failed in $pc"
-Continue
 }
 else 
 {Write-Output "Ping success in $pc"
