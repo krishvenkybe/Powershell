@@ -1,5 +1,5 @@
-$dest = '\\192.168.2.21\IT Backup 2019\SVN data'
+$dest = '\\********\IT Backup 2019\SVN data'
 $cred = Get-Credential -UserName "************"
-$pss = New-PSSession -ComputerName "Tellserv02" -Credential $cred
+$pss = New-PSSession -ComputerName "*******" -Credential $cred
 Invoke-Command -Session $pss `
 -ScriptBlock {Copy-Item "E:\" -Destination '$dest' -Recurse -Force -Credential $cred}
