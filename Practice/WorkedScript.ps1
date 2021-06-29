@@ -1,7 +1,7 @@
 ﻿# PowerShell Script to delete files and or folders older than X days.
 # Version 1.0
 #--------------------------------------------------------------------
-net use Z: "\\192.168.2.21\USB_Store"
+net use Z: "\\*******\USB_Store"
 Z:
 # Renaming the Old backup folder to temp
 Rename-Item -Path 'Z:\Project Backup Old' "tmp"

@@ -1,1 +1,0 @@
-Get-ADUser -Filter * -Properties msnpallowdialin | Where-Object -Property msNPAllowDialin -EQ $true | Select-Object Name, msNPAllowDialin 
