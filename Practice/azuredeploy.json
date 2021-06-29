@@ -1,0 +1,93 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "projectname": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 24,
+            "metadata": {
+                "description": "Project name of the resource."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "appServicePlanName": {
+            "type": "string",
+            "defaultValue": "venkatAppServicePlan"
+        },
+        "linuxFxVersion": {
+            "type": "string",
+            "defaultValue": "python|3.8",
+            "metadata": {
+            "description": "The Runtime stack of current web app"
+            }
+        }
+    },
+    "variables": {
+        "appserviceplan": "[concat(parameters('projectname'), 'Plan')]",
+        "appname": "[concat(parameters('projectname'), 'webapp')]",
+        "storageaccountname": "[concat(parameters('projectname'), uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {   
+            "name": "linkedtemplate",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-02-01",
+            "properties": {
+                "mode" : "Incremental",
+                "templateLink": {
+                    "relativepath" : "linkedtemplate.json"
+                },
+                "parameters": {
+                    "storageaccountname" : {
+                        "value": "[variables('storageaccountname')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name":"[variables('appserviceplan')]",
+            "location":"[parameters('location')]",
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "size": "F1",
+                "family": "F",
+                "capacity": 1
+            },
+            "kind": "Linux",
+            "properties": {
+                "perSiteScaling": false,
+                "reserved": true,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[variables('appname')]",
+            "location": "[parameters('location')]",
+            "kind": "app",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+                "siteconfig": {
+                "linuxFxVersion": "[parameters('linuxFxVersion')]"
+                }
+            }
+        }
+    ],
+    "outputs":{}
+}

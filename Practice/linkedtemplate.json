@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageaccountname":{
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 24
+        },
+        "storagesku": {
+            "type": "string",
+            "defaultValue": "Standard_LRS"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+                {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('storageaccountname')]",
+            "location": "[parameters('location')]",
+            "tags":{
+                "Practice" : "Demo"
+                },
+            "sku":{
+                "name": "[parameters('storagesku')]"
+                },
+            "kind": "StorageV2",
+            "properties":{
+                "supportsHttpsTrafficOnly": true
+            }
+        }
+    ],
+    "outputs": {}
+}
